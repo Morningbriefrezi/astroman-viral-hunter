@@ -1,0 +1,30 @@
+name: AstroMan Viral Hunter
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # Runs daily at 09:00 Tbilisi time (UTC+4 = 05:00 UTC)
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Viral Hunter
+        run: node src/index.js
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FX_API: https://api.exchangerate.host/latest?base=USD&symbols=GEL
