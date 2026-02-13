@@ -1,38 +1,18 @@
-import dotenv from "dotenv";
-dotenv.config();
+let message = "🚀 ASTROMAN VIRAL HUNTER REPORT\n\n";
 
-import cron from "node-cron";
-import { fetchProducts } from "./suppliers.js";
-import { analyzeViral } from "./openai.js";
-import { convertToGEL } from "./fx.js";
-import { sendToTelegram } from "./telegram.js";
+for (let i = 0; i < analysis.length; i++) {
 
-async function runViralHunter() {
+  const product = rawProducts.find(p => p.name === analysis[i].name);
+  const gel = await convertToGEL(product.price_usd);
 
-  const rawProducts = await fetchProducts();
-  const analysis = await analyzeViral(rawProducts);
-
-  let message = "🚀 ASTROMAN VIRAL HUNTER REPORT\n\n";
-
-  for (let i = 0; i < analysis.length; i++) {
-
-    const gel = await convertToGEL(rawProducts[i].price_usd);
-
-    message += `
+  message += `
 ${i+1}. ${analysis[i].name}
-Score: ${analysis[i].score}/10
-USD: $${rawProducts[i].price_usd}
-GEL: ${gel}₾
-Why: ${analysis[i].reason}
+🔥 Score: ${analysis[i].score}/10
+💵 USD: $${product.price_usd}
+🇬🇪 GEL: ${gel}₾
+🔗 Link: ${product.link}
+
+🧠 Why: ${analysis[i].reason}
 
 `;
-  }
-
-  await sendToTelegram(message);
 }
-
-cron.schedule("0 9 * * *", async () => {
-  await runViralHunter();
-});
-
-runViralHunter();
