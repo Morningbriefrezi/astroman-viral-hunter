@@ -44,4 +44,12 @@ ${JSON.stringify(products)}
     temperature: 0.7
   });
 
-  let content = response.choices[0].m
+  let content = response.choices[0].message.content;
+
+  content = content
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  return JSON.parse(content);
+}
